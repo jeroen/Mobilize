@@ -1,0 +1,70 @@
+#PART 0:
+#update your os to the latest everything
+sudo yum update
+
+#if centos: add epel repositories:
+rpm -Uvh http://download.fedora.redhat.com/pub/epel/5/i386/epel-release-5-4.noarch.rpm
+
+#PART 1:
+
+#install R
+sudo yum install R
+sudo yum install gcc gcc-c++
+sudo yum install libxml2-devel
+sudo yum install curl-devel
+
+# Open R and do:
+sudo R
+
+install.packages("XML");
+install.packages("RJSONIO");
+install.packages("RCurl");
+install.packages("multicore");
+install.packages("ggplot2");
+
+install.packages("rweb",repos="http://www.stat.ucla.edu/~jeroen", type="source");
+install.packages("Ohmage",repos="http://www.stat.ucla.edu/~jeroen", type="source");
+install.packages("Mobilize",repos="http://www.stat.ucla.edu/~jeroen", type="source");
+install.packages("JSlibs", repos="http://www.stat.ucla.edu/~jeroen", type="source")
+install.packages("MobilizeWebdemo",repos="http://www.stat.ucla.edu/~jeroen", type="source");
+
+
+#PART 2: RAPACHE
+
+#install apache2
+sudo yum install httpd httpd-devel
+
+#get rapache
+wget http://rapache.net/files/rapache-1.1.14.tar.gz
+tar xzvf rapache*
+cd rapache*
+sudo ./configure --with-apache2-apxs=/usr/sbin/apxs 
+sudo make
+sudo make install
+
+#PART 3: configure apache
+sudo nano /etc/httpd/conf/httpd.conf
+
+#insert this in /etc/httpd/conf/httpd.conf:
+#for example after the system root entry
+
+############# RAPACHE STUFF (JEROEN JUNE 2011) ##########################
+
+LoadModule R_module /usr/lib64/httpd/modules/mod_R.so
+Include /usr/lib64/R/library/rweb/aliases/aliases.conf
+
+<Location /R>
+       	SetHandler r-handler
+       	RHandler opencpu.server::roothandler
+</Location>
+
+<Location /store>
+       	SetHandler r-handler
+       	RHandler opencpu.server::roothandler
+</Location>
+
+ErrorDocument 400 /R/lasterror
+
+########################################################################
+
+sudo /etc/init.d/httpd restart

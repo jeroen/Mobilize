@@ -1,0 +1,10 @@
+Package: Mobilize
+Type: Package
+Title: Mobilize plots and functions 
+Version: 0.1
+Date: 2011-05-20
+Author: Jeroen Ooms
+Maintainer: Jeroen Ooms <jeroen.ooms@stat.ucla.edu>
+Description: Some canned plots and functions designed for the mobilize project. Designed to be called remotely.
+License: Private
+Depends: Ohmage, ggplot2
