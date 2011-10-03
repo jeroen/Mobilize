@@ -49,23 +49,25 @@ biplot.character <- function(values, dates, ...){
 biplot.do <- function(values, dates, ...){
 	UseMethod("biplot")	
 }
-#note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
-biplot <- function(serverurl, token, campaign_urn, prompt_id, prompt2_id, start_date="2010-01-01", end_date="2020-01-01", privacy_state="both", printurl=FALSE){
+
+#biplot function
+biplot <- function(campaign_urn, prompt_id, prompt2_id, ...){
 	
-	if(printurl){
-		print(geturl(match.call(expand.dots=T)));
-	}
+	#secret argument printurl for debugging
+	geturl(match.call(expand.dots=T));
 	
-	myData <- oh.getdata(serverurl, token, campaign_urn, start_date = start_date, end_date=end_date, privacy_state=privacy_state, prompt_id_list=paste(unique(c(prompt_id, prompt2_id)), collapse=","));
+	#get data for both prompts
+	myData <- oh.survey_response.read(campaign_urn, column_list="urn:ohmage:prompt:response", prompt_id_list=unique(c(prompt_id, prompt2_id)), ...);
+	myData <- na.omit(myData);
 	
+	#check for empty plot
 	if(nrow(myData) == 0){
-		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
+		return(qplot(0,0,geom="text", label="request returned no data.", xlab=prompt_id, ylab=prompt2_id));
 	}	
 	
 	xvarname <- paste("prompt.id.", prompt_id, sep="");
 	yvarname <- paste("prompt.id.", prompt2_id, sep="");	
-	plottitle <- paste("biplot: ", prompt_id, " - ", prompt2_id, sep="");
 	
-	myplot <- biplot.do(myData[[xvarname]], myData[[yvarname]], xlab=prompt_id, ylab=prompt2_id, main="")
+	myplot <- biplot.do(myData[[xvarname]], myData[[yvarname]], xlab=prompt_id, ylab=prompt2_id, main="");
 }
 

@@ -32,10 +32,9 @@ userplot.factor <- function(values, dates, ...){
 	names(myData) <- c("dates", "values", "count");
 	myData <- myData[myData$count > 0,];
 	
-	myplot <- qplot(...) + 
-	geom_point(aes(x=dates,y=values, size=count, color=count), data=myData) + 
-	geom_text(aes(x=dates,y=values, label=count, size=count/2), data=myData, color="white") +
-	scale_size(to = c(5, 20));
+	myplot <- ggplot(aes(x=dates,y=values, size=count*2, color=count, label=count), data=myData) + geom_point() +
+	geom_text(aes(size=count), color="white") +
+	scale_size(range = c(5, 20), legend=FALSE);
 
 	return(myplot);
 }
@@ -57,27 +56,23 @@ userplot.do <- function(values, dates, ...){
 	UseMethod("userplot")	
 }
 
-userplot <- function(serverurl, token, campaign_urn, prompt_id, user_id, start_date="2010-01-01", end_date="2020-01-01", privacy_state="both", printurl=FALSE){
+userplot <- function(campaign_urn, prompt_id, user_id, ...){
 	
-	if(printurl){
-		print(geturl(match.call(expand.dots=T)));
-	}
+	#printurl
+	geturl(match.call(expand.dots=T));
 	
-	myData <- oh.getdata(serverurl, token, campaign_urn, start_date = start_date, end_date=end_date, prompt_id_list=prompt_id, user_list=user_id, privacy_state=privacy_state);
-
+	#get data
+	myData <- oh.survey_response.read(campaign_urn, prompt_id_list=prompt_id, user_list=user_id, ...);
+	myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
-	plottitle <- paste("userplot: ", user_id, sep="");	
 	
-	if(nrow(myData) == 0 || sum(!is.na(myData[[fullname]])) == 0){
+	#check for now data
+	if(nrow(myData) == 0 || all(is.na(myData[[fullname]]))){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
-	}
+	}	
 	
-	#HACK FOR GGPLOT BUG
-	if(nrow(myData) == 1){
-		return(qplot(0,0,geom="text", label="not enough data to draw a plot.", xlab="", ylab=""));
-	}
-	###
-		
+	#make plot	
+	plottitle <- paste("userplot: ", user_id, sep="");	
 	myplot <- userplot.do(myData[[fullname]], myData$context.utc_timestamp, xlab="", ylab="", main=plottitle)
 }
 

@@ -18,10 +18,10 @@ distributionplot.multifactor <- function(values, ...){
 distributionplot.numeric <- function(values, ...){
 	
 	#exception if there are only a couple of unique values:
-	if(length(unique(values)) < 8){
-		values <- factor(values, ordered=T);
-		distributionplot.do(values, ...);
-	}
+	#if(length(unique(values)) < 8){
+	#	values <- factor(values, ordered=T);
+	#	distributionplot.do(values, ...);
+	#}
 	
 	myplot <- qplot(values, geom="bar", ...) 
 	return(myplot);
@@ -29,6 +29,9 @@ distributionplot.numeric <- function(values, ...){
 
 distributionplot.factor <- function(values, ...){
 	myplot <- qplot(values, geom="bar", fill=values, ...);
+	if(length(levels(values)) > 7){
+		myplot <- myplot + opts(axis.text.x=theme_text(angle=45));
+	}	
 	return(myplot);
 }
 
@@ -58,20 +61,22 @@ distributionplot.do <- function(values, ...){
 	UseMethod("distributionplot");
 }
 
-distributionplot <- function(serverurl, token, campaign_urn, prompt_id, start_date="2010-01-01", end_date="2020-01-01", privacy_state="both", printurl=FALSE, ...){
+distributionplot <- function(campaign_urn, prompt_id, ...){
 	
-	if(printurl){
-		print(geturl(match.call(expand.dots=T)));
-	}
-	
-	myData <- oh.getdata(serverurl, token, campaign_urn, start_date = start_date, end_date=end_date, privacy_state=privacy_state, prompt_id_list=prompt_id);
-
+	#secret argument printurl for debugging	
+	geturl(match.call(expand.dots=T));
+		
+	#get data
+	myData <- oh.survey_response.read(campaign_urn=campaign_urn, prompt_id=prompt_id, column_list="urn:ohmage:prompt:response", ...);
+	myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
-	plottitle <- paste("distributionplot: ", prompt_id, sep="");	
 	
+	#check for no data
 	if(nrow(myData) == 0 || sum(!is.na(myData[[fullname]])) == 0){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
 	}	
-
-	myplot <- distributionplot.do(myData[[fullname]], xlab="", ylab="", main=plottitle, ...)
+	
+	#draw plot
+	plottitle <- paste("distributionplot: ", prompt_id, sep="");	
+	myplot <- distributionplot.do(na.omit(myData[[fullname]]), xlab="", ylab="", main=plottitle)
 }

@@ -24,43 +24,58 @@ timeplot.multifactor <- function(values, dates, ...){
 	timeplot.do(newvalues, newdates, ...);
 }
 
-timeplot.numeric <- function(values, dates, ...){
-	
-	#create dataframe of quantiles
-	dates <- as.Date(dates);
-	dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
-	quantiles <- sapply(split(values,dates), quantile, probs=c(0, 0.5, 1), na.rm=T)
-	quantiles <- quantiles[!is.na(quantiles[,2]),];
+timeplot.numeric <- function(values, dates, aggregate, ...){
 
-  myData <- as.data.frame(t(quantiles));
-  names(myData) <- c("Min", "Mean", "Max");
-  myData$dates <- as.Date(row.names(myData));
-  
-  myplot <- qplot(...) +
-     geom_ribbon(aes(x=dates, ymin=Min, ymax=Max), alpha=0.3, data=myData) +
-     geom_line(aes(x=dates, y=Mean), size=2, color="blue", data=myData);
-     
-  return(myplot);
+	dates <- as.Date(dates);
+	if(missing(aggregate)){
+		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
+		if(totalperiod < 30){
+			mybinwidth <- 1;
+		} else if (totalperiod < 180 ){
+			mybinwidth <- 7;
+		} else {
+			mybinwidth <- 30;
+		}
+	} else {
+		if(!is.numeric(aggregate)){
+			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
+		}
+		mybinwidth <- aggregate;
+	}
 	
+  myData <- bin.by.date(dates, values, binwidth=mybinwidth, probs=c(0,.5,1));
+  names(myData) <- c("Date", "Min", "Mean", "Max");
+  
+	myplot <- ggplot(aes(x=Date, y=Mean, ymin=Min, ymax=Max), data=myData) +
+	geom_ribbon(alpha=0.3) +
+	geom_line(size=1, color="blue") +
+	geom_point(size=3, color="red");
+     
+	return(myplot);
 }
 
-timeplot.factor <- function(values, dates, ...){
+timeplot.factor <- function(values, dates, aggregate, ...){
 	
-	#create dataframe of counts
 	dates <- as.Date(dates);
-	dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
-	counts <- sapply(split(values,dates), table);
-	myData <- melt(counts);
+	if(missing(aggregate)){
+		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
+		if(totalperiod < 30){
+			mybinwidth <- 1;
+		} else if (totalperiod < 180 ){
+			mybinwidth <- 7;
+		} else {
+			mybinwidth <- 30;
+		}
+	} else {
+		if(!is.numeric(aggregate)){
+			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
+		}
+		mybinwidth <- aggregate;
+	}
 	
-	#cast the datatypes
-	names(myData) <- c("factor", "date", "count");	
-	myData$date <- as.Date(myData$date);	
-	myData$factor <- factor(myData$factor, levels=levels(values), ordered=T);	
-	
-	#return plot
-	myplot <- qplot(date, count, fill=factor, geom="bar", stat="identity", data=myData, ...) +
-		scale_fill_hue(breaks = rev(levels(myData$factor)));
-	return(myplot);	
+	myData <- data.frame(date=dates, value=values);
+	myplot <- ggplot(aes(x=date, fill=value), data=myData) + geom_bar(binwidth=mybinwidth);
+	return(myplot);		
 }
 
 timeplot.character <- function(values, dates, ...){
@@ -88,27 +103,23 @@ timeplot.do <- function(values, dates, ...){
 }
 
 #note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
-timeplot <- function(serverurl, token, campaign_urn, prompt_id, start_date="2010-01-01", end_date="2020-01-01", privacy_state="both", printurl=FALSE){
+timeplot <- function(campaign_urn, prompt_id, aggregate, ...){
 	
-	if(printurl){
-		print(geturl(match.call(expand.dots=T)));
-	}
+	#printurl
+	geturl(match.call(expand.dots=T));
 	
-	myData <- oh.getdata(serverurl, token, campaign_urn, start_date = start_date, end_date=end_date, prompt_id_list=prompt_id, privacy_state=privacy_state);
-
+	#get data
+	myData <- oh.survey_response.read(campaign_urn, prompt_id_list=prompt_id, column_list="urn:ohmage:prompt:response,urn:ohmage:context:utc_timestamp", ...);
+	myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
-	plottitle <- paste("timeplot: ", prompt_id, sep="");	
 	
-	if(nrow(myData) == 0 || sum(!is.na(myData[[fullname]])) == 0){
+	#check for no data
+	if(nrow(myData) == 0 || all(is.na(myData[[fullname]]))){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
-	}
-	
-	# HACK FOR GGPLOT BUG
-	if(length(unique(as.Date(myData$context.utc_timestamp))) == 1){
-		return(qplot(0,0,geom="text", label="not enough data to draw a timeseries.", xlab="", ylab=""));
-	}
-	###
-	
-	myplot <- timeplot.do(myData[[fullname]], myData$context.utc_timestamp, main=plottitle, xlab="", ylab="")
+	}	
+
+	#draw plot
+	plottitle <- paste("timeplot: ", prompt_id, sep="");	
+	myplot <- timeplot.do(myData[[fullname]], myData$context.utc_timestamp, aggregate=aggregate, main=plottitle, xlab="", ylab="");
 }
 

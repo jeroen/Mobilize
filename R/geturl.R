@@ -5,6 +5,9 @@
 
 
 geturl <- function(callmatch){
+	if(!"printurl" %in% names(callmatch) || !isTRUE(callmatch$printurl)){
+		return();
+	}
 	callmatch <- as.list(callmatch);
 	FUN <- callmatch[[1]];
 	args <- callmatch[-1];
@@ -20,5 +23,6 @@ geturl <- function(callmatch){
 		}
 		url = paste(url, "&", names(args[i]), "='", eval(args[[i]]), "'", sep="")
 	}
+	print(url);
 	return(url);
 }

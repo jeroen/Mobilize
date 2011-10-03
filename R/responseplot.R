@@ -3,55 +3,46 @@
 # Author: jeroen
 ###############################################################################
 
-responseplot.do <- function(dates, surveyvec, ...){
-
-	#remove time
+responseplot.do <- function(dates, surveyvec, aggregate, ...){
 	dates <- as.Date(dates);
-	dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
-	
-	#make into a dataframe	
-	if(length(levels(surveyvec)) == 1){
-		myData <- melt(table(dates));
-		myData$survey <- levels(surveyvec);
-		myData$survey <- as.factor(myData$survey);
-		names(myData) <- c("date", "responses","survey");	
+	if(missing(aggregate)){
+		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
+		if(totalperiod < 30){
+			mybinwidth <- 1;
+		} else if (totalperiod < 180 ){
+			mybinwidth <- 7;
+		} else {
+			mybinwidth <- 30;
+		}
 	} else {
-		myData <- melt(sapply(split(surveyvec, dates),table));
-		names(myData) <- c("survey", "date", "responses");			
+		if(!is.numeric(aggregate)){
+			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
+		}
+		mybinwidth <- aggregate;
 	}
-
-	#table converts it to a factor
-	myData$date <- as.Date(myData$date);
 	
-	#make the plot
-	survey <- myData$survey;
-	myplot <- qplot(myData$date, myData$responses, fill=survey, stat="identity", geom=c("bar"), ...) + 
-			scale_fill_hue(breaks = rev(levels(survey)));
-	return(myplot);
-	
+	myData <- data.frame(date=dates, survey=surveyvec);
+	myplot <- ggplot(aes(x=date, fill=survey), data=myData) + geom_bar(binwidth=mybinwidth);
+	return(myplot);	
 }
 
-#note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
-responseplot <- function(serverurl, token, campaign_urn, start_date="2010-01-01", end_date="2020-01-01", privacy_state="both", printurl=FALSE){
+#note: anything in ... will be passed to the server
+responseplot <- function(campaign_urn, aggregate, ...){
+
+	#secret argument printurl for debugging
+	geturl(match.call(expand.dots=T))
 	
-	if(printurl){
-		print(geturl(match.call(expand.dots=T)));
-	}
+	#retrieve data
+	myData <- oh.survey_response.read(campaign_urn=campaign_urn, column_list="urn:ohmage:context:utc_timestamp,urn:ohmage:survey:id", ...);
+	myData <- na.omit(myData);
 	
-	myData <- oh.getdata(serverurl, token, campaign_urn, start_date = start_date, end_date=end_date, privacy_state=privacy_state, column_list="urn:ohmage:user:id,urn:ohmage:context:utc_timestamp,urn:ohmage:survey:id");
-	
+	#empty plot
 	if(nrow(myData) == 0){
-		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
+		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab="Response Count"));
 	}	
 	
-	#HACK FOR GGPLOT BUG
-	if(length(unique(as.Date(myData$context.utc_timestamp))) == 1){
-		return(qplot(0,0,geom="text", label="not enough data to draw a timeseries (only 1 day).", xlab="", ylab=""));
-	}
-	###
-	
+	#create plot:	
 	plottitle <- paste("responseplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
-	
-	myplot <- responseplot.do(myData$context.utc_timestamp, myData$survey.id, xlab="", ylab="Response Count", main=plottitle)
+	myplot <- responseplot.do(myData$context.utc_timestamp, myData$survey.id, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle)
 }
 
