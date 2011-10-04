@@ -111,6 +111,8 @@ Ext.onReady(function(){
 			
 			if(Ext.getCmp(plotargs[i] + '_field').xtype == "datefield"){
 				url = url + "&" + plotargs[i] + "='" + Ext.getCmp(plotargs[i] + '_field').getRawValue() + "'";
+			} else if(Ext.getCmp(plotargs[i] + '_field').xtype == "numberfield"){
+				url = url + "&" + plotargs[i] + "=" + Ext.getCmp(plotargs[i] + '_field').getValue();
 			} else { 
 				url = url + "&" + plotargs[i] + "='" + Ext.getCmp(plotargs[i] + '_field').getValue() + "'";
 			}			
@@ -259,10 +261,10 @@ Ext.onReady(function(){
 	});
 	
 	var plotarguments = {
-		"responseplot": ["start_date", "end_date", "campaign_urn", "privacy_state"],
-		"timeplot" : ["start_date", "end_date", "campaign_urn","prompt_id", "privacy_state"],
+		"responseplot": ["start_date", "end_date", "campaign_urn", "privacy_state", "aggregate"],
+		"timeplot" : ["start_date", "end_date", "campaign_urn","prompt_id", "privacy_state", "aggregate"],
 		"sharedplot" : ["start_date", "end_date", "campaign_urn"],
-		"sharedtimeplot" : ["start_date", "end_date", "campaign_urn"],		
+		"sharedtimeplot" : ["start_date", "end_date", "campaign_urn", "aggregate"],		
 		"distributionplot" : ["start_date", "end_date", "campaign_urn","prompt_id", "privacy_state"],	
 		"userplot" : ["start_date", "end_date", "campaign_urn","prompt_id", "user_id", "privacy_state"],
 		"mapplot" : ["campaign_urn"],
@@ -448,6 +450,13 @@ Ext.onReady(function(){
 			            	id: 'end_date_field',
 			            	format: 'Y-m-d',
         					value: new Date(new Date().setDate(new Date().getDate()+1)) //today + 1 = tomorrow	            	
+			            },
+			            {
+			            	xtype: 'numberfield',
+			            	fieldLabel: 'Aggregate (days)',
+			            	name: 'aggregate',
+			            	id: 'aggregate_field',
+        					value: 7 //today + 1 = tomorrow	            	
 			            },
 						{
 			                xtype: 'combo',
