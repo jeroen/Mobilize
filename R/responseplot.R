@@ -34,7 +34,7 @@ responseplot <- function(campaign_urn, aggregate, ...){
 	
 	#retrieve data
 	myData <- oh.survey_response.read(campaign_urn=campaign_urn, column_list="urn:ohmage:context:utc_timestamp,urn:ohmage:survey:id", ...);
-	myData <- na.omit(myData);
+	if(nrow(myData) > 0) myData <- na.omit(myData);
 	
 	#empty plot
 	if(nrow(myData) == 0){

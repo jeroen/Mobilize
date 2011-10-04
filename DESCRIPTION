@@ -7,4 +7,4 @@ Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen.ooms@stat.ucla.edu>
 Description: Some canned plots and functions designed for the mobilize project. Designed to be called remotely.
 License: GPL
-Depends: Ohmage, ggplot2, reshape
+Depends: Ohmage, ggplot2, reshape, wordcloud

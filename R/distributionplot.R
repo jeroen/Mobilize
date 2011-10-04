@@ -42,18 +42,15 @@ distributionplot.character <- function(values, ...){
 	allwords <- tolower(strsplit(bigstring, " +")[[1]])
 	
 	#count, sort, head
-	cloud <- melt(head(sort(table(allwords), decr=T), 100))
-	if(length(allwords) == 1){
-		words <- names(cloud);
-		wordcount <- unname(cloud);
-	} else {
-		words <- cloud[[1]];
-		wordcount <- cloud[[2]];
-	}
+	cloud <- melt(head(as.list(sort(table(allwords)), decr=T), 100));
+	words <- cloud[[2]];
+	freq <- cloud[[1]];
+	wordcloud(words, freq, min.freq=min(freq));
+	return();
 	
-	#make the plot
-	qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=wordcount, color=wordcount) +
-	scale_size(to = c(6, 12)) 		
+	#myplot <- qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=freq, color=freq) +
+	#scale_size(range = c(6, 12))
+	#return(myplot);
 	
 }
 
@@ -68,9 +65,9 @@ distributionplot <- function(campaign_urn, prompt_id, ...){
 		
 	#get data
 	myData <- oh.survey_response.read(campaign_urn=campaign_urn, prompt_id=prompt_id, column_list="urn:ohmage:prompt:response", ...);
-	myData <- na.omit(myData);
+	if(nrow(myData) > 0) myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
-	
+
 	#check for no data
 	if(nrow(myData) == 0 || sum(!is.na(myData[[fullname]])) == 0){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));

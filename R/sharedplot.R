@@ -19,7 +19,7 @@ sharedplot <- function(campaign_urn, ...){
 	
 	#get data
 	myData <- oh.survey_response.read(campaign_urn, column_list="urn:ohmage:survey:privacy_state,urn:ohmage:survey:id", ...);
-	myData <- na.omit(myData);
+	if(nrow(myData) > 0) myData <- na.omit(myData);
 	
 	#check if we have some data
 	if(nrow(myData) == 0){

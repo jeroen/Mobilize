@@ -32,7 +32,7 @@ userplot.factor <- function(values, dates, ...){
 	names(myData) <- c("dates", "values", "count");
 	myData <- myData[myData$count > 0,];
 	
-	myplot <- ggplot(aes(x=dates,y=values, size=count*2, color=count, label=count), data=myData) + geom_point() +
+	myplot <- qplot(x=dates,y=values, size=count*2, color=count, label=count, data=myData, ...) + geom_point() +
 	geom_text(aes(size=count), color="white") +
 	scale_size(range = c(5, 20), legend=FALSE);
 
@@ -73,7 +73,7 @@ userplot <- function(campaign_urn, prompt_id, user_id, ...){
 	
 	#make plot	
 	plottitle <- paste("userplot: ", user_id, sep="");	
-	myplot <- userplot.do(myData[[fullname]], myData$context.utc_timestamp, xlab="", ylab="", main=plottitle)
+	myplot <- userplot.do(myData[[fullname]], myData$context.utc_timestamp, xlab="", ylab=prompt_id, main=plottitle)
 }
 
 

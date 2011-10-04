@@ -7,11 +7,11 @@ mytoken <- oh.login('ohmage.jeroen','ohmage.jeroen',serverurl);
 
 #get data from the server
 campaigns <- oh.campaign.read(output="long");
-mycampaign <- grep("Sleep",names(campaigns$data), value=T)[1]
+mycampaign <- grep("chipts",names(campaigns$data), value=T)[1]
 somedata <- oh.survey_response.read(mycampaign);
 allprompts <- grep("prompt.id", names(somedata), value=TRUE);
 promptnames <- gsub("prompt.id.","", allprompts);
-allusers <- unname(unlist(campaigns$data[[mycampaign]]$user_role_campaign));
+allusers <- unique(unname(unlist(campaigns$data[[mycampaign]]$user_role_campaign)));
 
 #get filtered data, e.g
 somedata <- oh.survey_response.read(mycampaign, start_date="2011-06-01", end_date="2011-06-30");
@@ -62,7 +62,7 @@ for(myprompt in promptnames){
 
 #timeplots
 for(myprompt in promptnames){
-	try(print(timeplot(mycampaign, myprompt, printurl=TRUE, agg=30)));	
+	try(print(timeplot(mycampaign, myprompt, printurl=TRUE)));	
 	try(print(timeplot(mycampaign, myprompt, start_date="2011-06-01", end_date="2011-06-30", printurl=TRUE, agg=30)));
 	try(print(timeplot(mycampaign, myprompt, privacy_state="shared", printurl=TRUE, agg=30)));
 	try(print(timeplot(mycampaign, myprompt, start_date="2000-01-01", end_date="2000-01-01", printurl=TRUE, agg=30)));
@@ -70,8 +70,8 @@ for(myprompt in promptnames){
 
 #userplots
 for(myprompt in promptnames){
-	for(myuser in allusers){
-		try(print(userplot(mycampaign, myprompt, myuser)));
+	for(myuser in "ohmage.jeroen"){
+		try(print(userplot(mycampaign, myprompt, myuser, printurl=TRUE)));
 	}
 }
 
@@ -79,6 +79,13 @@ for(myprompt in promptnames){
 for(myprompt1 in promptnames){
 	for(myprompt2 in promptnames){
 		try(print(scatterplot(mycampaign, myprompt1, myprompt2, jiter=FALSE, printurl=TRUE)));
+	}
+}
+
+#biplots
+for(myprompt1 in promptnames){
+	for(myprompt2 in promptnames){
+		try(print(biplot(mycampaign, myprompt1, myprompt2, printurl=TRUE)));
 	}
 }
 

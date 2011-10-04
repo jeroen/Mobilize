@@ -3,25 +3,23 @@
 # Author: jeroen
 ###############################################################################
 
-timeplot.POSIXct <- function(values, dates, ...){
+timeplot.POSIXct <- function(values, dates, aggregate, ...){
 	#remove date
-	values <- as.numeric(format(values, "%H"));
-	myplot <- qplot(dates, values, ...);
-	return(myplot);	
+	newvalues <- as.numeric(format(values, "%H"));
+	timeplot.do(newvalues, dates=dates, aggregate=aggregate, ...);
 }
 
-timeplot.hours_before_now <- function(values, dates, ...){
+timeplot.hours_before_now <- function(values, dates, aggregate, ...){
 	#same plot as timestamp but with hours subtracted 
-	timeofday <- as.numeric(format(dates, "%H")) - values;
-	myplot <- qplot(dates, timeofday, ...);
-	return(myplot);	
+	newvalues <- (as.numeric(format(dates, "%H")) - values + 24) %% 24;
+	timeplot.do(newvalues, dates=dates, aggregate=aggregate, ...);
 }
 
 
-timeplot.multifactor <- function(values, dates, ...){
+timeplot.multifactor <- function(values, dates, aggregate, ...){
 	newvalues <- as.vector(values);
 	newdates <- rep(dates, dim(values));
-	timeplot.do(newvalues, newdates, ...);
+	timeplot.do(newvalues, newdates, aggregate,...);
 }
 
 timeplot.numeric <- function(values, dates, aggregate, ...){
@@ -43,10 +41,10 @@ timeplot.numeric <- function(values, dates, aggregate, ...){
 		mybinwidth <- aggregate;
 	}
 	
-  myData <- bin.by.date(dates, values, binwidth=mybinwidth, probs=c(0,.5,1));
-  names(myData) <- c("Date", "Min", "Mean", "Max");
+	myData <- bin.by.date(dates, values, binwidth=mybinwidth, probs=c(0,.5,1));
+	names(myData) <- c("Date", "Min", "Mean", "Max");
   
-	myplot <- ggplot(aes(x=Date, y=Mean, ymin=Min, ymax=Max), data=myData) +
+	myplot <- qplot(x=Date, y=Mean, ymin=Min, ymax=Max, data=myData, ...) +
 	geom_ribbon(alpha=0.3) +
 	geom_line(size=1, color="blue") +
 	geom_point(size=3, color="red");
@@ -74,7 +72,7 @@ timeplot.factor <- function(values, dates, aggregate, ...){
 	}
 	
 	myData <- data.frame(date=dates, value=values);
-	myplot <- ggplot(aes(x=date, fill=value), data=myData) + geom_bar(binwidth=mybinwidth);
+	myplot <- qplot(x=date, fill=value, data=myData, ...) + geom_bar(binwidth=mybinwidth);
 	return(myplot);		
 }
 
@@ -88,7 +86,8 @@ timeplot.character <- function(values, dates, ...){
 	myData <- data.frame(date=dates, text=values, y=y, angle=angle);
 	
 	#create plot
-	myplot <- qplot(date, y, label=text, angle=angle, geom="text", data=myData, ...)
+	myplot <- qplot(date, y, label=text, angle=angle, geom="text", data=myData, ...) +
+		opts(axis.text.y = theme_blank()); 
 	return(myplot);
 	
 }
@@ -110,7 +109,7 @@ timeplot <- function(campaign_urn, prompt_id, aggregate, ...){
 	
 	#get data
 	myData <- oh.survey_response.read(campaign_urn, prompt_id_list=prompt_id, column_list="urn:ohmage:prompt:response,urn:ohmage:context:utc_timestamp", ...);
-	myData <- na.omit(myData);
+	if(nrow(myData) > 0) myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
 	
 	#check for no data
