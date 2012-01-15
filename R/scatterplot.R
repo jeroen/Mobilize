@@ -1,9 +1,13 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
 
-#note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
+
+#' Create a scatterplot of two prompts
+#' @param campaign_urn id of the campaign
+#' @param prompt_id prompt on the x axis.
+#' @param prompt2_id prompt on the y axis
+#' @param jitter T/F. If points should be jittered 
+#' @param ... arguments passed on to oh.survey_response.read
+#' @return ggplot2 object
+#' @export
 scatterplot <- function(campaign_urn, prompt_id, prompt2_id, jitter=TRUE, ...){
 	
 	#check for secret 'printurl' argument
@@ -35,11 +39,13 @@ scatterplot <- function(campaign_urn, prompt_id, prompt2_id, jitter=TRUE, ...){
 	}		
 	
 	#draw plot
-	myplot <- qplot(x_var, y_var, xlab=prompt_id, ylab=prompt2_id, main="", geom="point");
+	myplot <- qplot(x_var, y_var, xlab=prompt_id, ylab=prompt2_id, main="", geom="blank");
 
 	#if jitter == TRUE, add a little jitterish
 	if(isTRUE(jitter)){
 		myplot <- myplot + geom_jitter(position=position_jitter(width=.25, height=.25));		
+	} else {
+		myplot <- myplot + geom_point();		
 	}
 	
 	if(is.factor(myData[[xvarname]]) && length(levels(myData[[xvarname]])) > 7){

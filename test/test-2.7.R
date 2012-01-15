@@ -7,7 +7,7 @@ mytoken <- oh.login('ohmage.jeroen','ohmage.jeroen',serverurl);
 
 #get data from the server
 campaigns <- oh.campaign.read(output="long");
-mycampaign <- grep("chipts",names(campaigns$data), value=T)[1]
+mycampaign <- grep("nack",names(campaigns$data), value=T)[1]
 somedata <- oh.survey_response.read(mycampaign);
 allprompts <- grep("prompt.id", names(somedata), value=TRUE);
 promptnames <- gsub("prompt.id.","", allprompts);

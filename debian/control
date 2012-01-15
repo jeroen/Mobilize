@@ -1,0 +1,11 @@
+Source: mobilize
+Section: gnu-r
+Priority: optional
+Maintainer: Jeroen Ooms <jeroenooms@gmail.com>
+Build-Depends: r-base-dev, xvfb, xauth, xfonts-base, debhelper (>> 4.1.0), cdbs, r-base-core, r-cran-ohmage
+Standards-Version: 3.9.1
+
+Package: r-cran-mobilize
+Architecture: all
+Depends: r-base-core (>= 2.12.1), ${shlibs:Depends}, r-base-core, r-cran-ohmage
+Description: Some plots for the Mobilize front-end.

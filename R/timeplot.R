@@ -101,14 +101,21 @@ timeplot.do <- function(values, dates, ...){
 	UseMethod("timeplot")	
 }
 
-#note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
+
+#' Timeseries plot of a prompt 
+#' @param campaign_urn campaign id
+#' @param prompt_id prompt id
+#' @param aggregate number of days to aggregate over. Defaults to something smart.
+#' @param ... other arguments passed on to oh.survey_response.read
+#' @return ggplot2 plot object
+#' @export
 timeplot <- function(campaign_urn, prompt_id, aggregate, ...){
 	
 	#printurl
 	geturl(match.call(expand.dots=T));
 	
 	#get data
-	myData <- oh.survey_response.read(campaign_urn, prompt_id_list=prompt_id, column_list="urn:ohmage:prompt:response,urn:ohmage:context:utc_timestamp", ...);
+	myData <- oh.survey_response.read(campaign_urn, prompt_id_list=prompt_id, column_list="urn:ohmage:prompt:response,urn:ohmage:context:timestamp", ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
 	
@@ -119,6 +126,9 @@ timeplot <- function(campaign_urn, prompt_id, aggregate, ...){
 
 	#draw plot
 	plottitle <- paste("timeplot: ", prompt_id, sep="");	
-	myplot <- timeplot.do(myData[[fullname]], myData$context.utc_timestamp, aggregate=aggregate, main=plottitle, xlab="", ylab="");
+	myplot <- timeplot.do(myData[[fullname]], myData$context.timestamp, aggregate=aggregate, main=plottitle, xlab="", ylab="");
+	
+	#return
+	return(myplot);
 }
 

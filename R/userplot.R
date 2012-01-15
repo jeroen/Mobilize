@@ -28,13 +28,14 @@ userplot.factor <- function(values, dates, ...){
 	dates <- as.Date(dates);
 	dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
 
+	library(reshape);
 	myData <- melt(table(dates, values));
 	names(myData) <- c("dates", "values", "count");
 	myData <- myData[myData$count > 0,];
 	
 	myplot <- qplot(x=dates,y=values, size=count*2, color=count, label=count, data=myData, ...) + geom_point() +
 	geom_text(aes(size=count), color="white") +
-	scale_size(range = c(5, 20), legend=FALSE);
+	scale_size(range = c(5, 20), guide="none");
 
 	return(myplot);
 }
@@ -56,6 +57,13 @@ userplot.do <- function(values, dates, ...){
 	UseMethod("userplot")	
 }
 
+#' Timeseries plot of data for a single user
+#' @param campaign_urn campaign id
+#' @param prompt_id prompt id
+#' @param user_id user id
+#' @param ... arguments passed on to oh.survey_response.read
+#' @return a ggplot2 plot object
+#' @export
 userplot <- function(campaign_urn, prompt_id, user_id, ...){
 	
 	#printurl
@@ -73,7 +81,10 @@ userplot <- function(campaign_urn, prompt_id, user_id, ...){
 	
 	#make plot	
 	plottitle <- paste("userplot: ", user_id, sep="");	
-	myplot <- userplot.do(myData[[fullname]], myData$context.utc_timestamp, xlab="", ylab=prompt_id, main=plottitle)
+	myplot <- userplot.do(myData[[fullname]], myData$context.timestamp, xlab="", ylab=prompt_id, main=plottitle)
+	
+	#return
+	return(myplot);
 }
 
 

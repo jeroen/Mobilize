@@ -29,14 +29,21 @@ sharedtimeplot.do <- function(dates, surveyvec, sharedvec, aggregate, ...){
 	return(myplot)
 }
 
-#note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
+
+
+#' Timeseries plot of the number of shared and unshared responses per campaign
+#' @param campaign_urn campaign id
+#' @param aggregate number of days to aggregate over. Optional. Defaults to something smart.
+#' @param ... other arguments passed to oh.survey_response.read
+#' @return a ggplot2 object
+#' @export
 sharedtimeplot <- function(campaign_urn, aggregate, ...){
 	
 	#printurl
 	geturl(match.call(expand.dots=T));
 	
 	#grab data
-	myData <- oh.survey_response.read(campaign_urn, column_list="urn:ohmage:survey:privacy_state,urn:ohmage:context:utc_timestamp,urn:ohmage:survey:id", ...);
+	myData <- oh.survey_response.read(campaign_urn, column_list="urn:ohmage:survey:privacy_state,urn:ohmage:context:timestamp,urn:ohmage:survey:id", ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
 	
 	#check for no data
@@ -46,6 +53,6 @@ sharedtimeplot <- function(campaign_urn, aggregate, ...){
 	
 	#draw plot
 	plottitle <- paste("sharedtimeplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
-	myplot <- sharedtimeplot.do(myData$context.utc_timestamp, myData$survey.id, myData$survey.privacy_state, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle);
+	myplot <- sharedtimeplot.do(myData$context.timestamp, myData$survey.id, myData$survey.privacy_state, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle);
 	return(myplot)
 }

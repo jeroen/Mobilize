@@ -21,12 +21,13 @@ install.packages("RJSONIO");
 install.packages("RCurl");
 install.packages("multicore");
 install.packages("ggplot2");
+install.packages("opencpu.encode");
+install.packages("interactivity")
 
-install.packages("rweb",repos="http://www.stat.ucla.edu/~jeroen", type="source");
+install.packages("opencpu.server",repos="http://www.stat.ucla.edu/~jeroen", type="source");
 install.packages("Ohmage",repos="http://www.stat.ucla.edu/~jeroen", type="source");
 install.packages("Mobilize",repos="http://www.stat.ucla.edu/~jeroen", type="source");
 install.packages("JSlibs", repos="http://www.stat.ucla.edu/~jeroen", type="source")
-install.packages("MobilizeWebdemo",repos="http://www.stat.ucla.edu/~jeroen", type="source");
 
 
 #PART 2: RAPACHE
@@ -35,7 +36,7 @@ install.packages("MobilizeWebdemo",repos="http://www.stat.ucla.edu/~jeroen", typ
 sudo yum install httpd httpd-devel
 
 #get rapache
-wget http://rapache.net/files/rapache-1.1.14.tar.gz
+wget http://biostat.mc.vanderbilt.edu/svn/rapache/web/files/rapache-1.1.14.tar.gz
 tar xzvf rapache*
 cd rapache*
 sudo ./configure --with-apache2-apxs=/usr/sbin/apxs 

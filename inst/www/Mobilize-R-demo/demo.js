@@ -44,7 +44,7 @@ Ext.onReady(function(){
 			return;
 		}
 	
-		url = "/R/file/Mobilize/getpicture?server="+SERVER+ "&token="+ TOKEN + "&campaign='" + campaign_urn + "'&owner='" + user_id + "'&id='" + photo + "'";
+		url = "/R/Mobilize/getpicture/file?server="+SERVER+ "&token="+ TOKEN + "&campaign='" + campaign_urn + "'&owner='" + user_id + "'&id='" + photo + "'";
 		
 		var newlink = document.createElement('a');
 		newlink.setAttribute('href',url);
@@ -103,7 +103,14 @@ Ext.onReady(function(){
 	
 	var downloadPlot = function(){
 		plotfun = treepanel.getSelectionModel().getLastSelected().get('id');
-		url = "Mobilize/" + plotfun + "?token=" + TOKEN + "&server=" + SERVER;
+		
+		if(this.format=="PDF") {
+			var output = "pdf";
+		} else {
+			var output = "png";
+		}		
+		
+		url = "/R/call/Mobilize/" + plotfun + "/" + output + "?token=" + TOKEN + "&server=" + SERVER;
 		
 		plotargs = plotarguments[plotfun];
 		for(var i = 0; i < plotargs.length; i++){
@@ -125,7 +132,7 @@ Ext.onReady(function(){
 			newMask.show();
 			Ext.Ajax.request({
 				method: 'GET',
-				url: '/R/json/Mobilize/gmapdata',
+				url: '/R/call/Mobilize/gmapdata/json',
 				disableCaching: false,
 				params: {
 					token: TOKEN,
@@ -159,7 +166,7 @@ Ext.onReady(function(){
 		}
 		
 		if(this.format == "PDF"){
-			window.open("/R/pdf/"+url);
+			window.open(url);
 			return;
 		}		
 		
@@ -167,20 +174,20 @@ Ext.onReady(function(){
 		plotheight = Ext.getCmp('contentpanel').getEl().getHeight() - 35; //tbar is 32 pix.
 		url = url + "&!width=" + plotwidth + "&!height=" + plotheight;
 		
-		Ext.getCmp('plotcard').update('<img src="/R/png/' + url + '"> <br /><br /> Generating image... Please wait...');			
+		Ext.getCmp('plotcard').update('<img src="' + url + '"> <br /><br /> Generating image... Please wait...');			
 	}
 	
 	var downloadData = function(){
 		if(!Ext.getCmp('campaign_urn_field').validate()) return;
 		
-		url = "/R/csv/Ohmage/oh.getdata/?token=" + TOKEN + "&server=" + SERVER +"&campaign_urn='" + Ext.getCmp('campaign_urn_field').getValue() + "'"; 
+		url = "/R/call/Ohmage/oh.survey_response.read/csv?token=" + TOKEN + "&server=" + SERVER +"&campaign_urn='" + Ext.getCmp('campaign_urn_field').getValue() + "'"; 
 		
 		window.open(url);
 	}
 	
 	var getCampaignData = function(){
 	    Ext.Ajax.request({
-	        url: '/R/json/Mobilize/campaigndata',
+	        url: '/R/call/Mobilize/campaigndata/json',
 	        method: 'GET',
 	        disableCaching: false,
 	        params: {
@@ -456,6 +463,8 @@ Ext.onReady(function(){
 			            	fieldLabel: 'Aggregate (days)',
 			            	name: 'aggregate',
 			            	id: 'aggregate_field',
+			            	minValue: 1,
+			            	maxValue: 365,
         					value: 7 //today + 1 = tomorrow	            	
 			            },
 						{
@@ -473,7 +482,7 @@ Ext.onReady(function(){
 			                    	{privacy_state: 'both'}
 			                    ]
 			                },
-			                value: 'shared',
+			                value: 'both',
 			                displayField: 'privacy_state',
 			                valueField: 'privacy_state'
 			            }
@@ -518,7 +527,7 @@ Ext.onReady(function(){
 	    Ext.myMask.show();
 		
 	    Ext.Ajax.request({
-	        url: '/R/json/Ohmage/oh.login',
+	        url: '/R/call/Ohmage/oh.login/json',
 	        method: 'GET',
 	        disableCaching: false,
 	        params: {
@@ -544,7 +553,7 @@ Ext.onReady(function(){
 	
 	Ext.keepalive = function(){
 	    Ext.Ajax.request({
-	        url: '/R/json/Mobilize/keepalive',
+	        url: '/R/call/Mobilize/keepalive/json',
 	        method: 'GET',
 	        disableCaching: false,
 	        params: {

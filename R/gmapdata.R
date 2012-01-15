@@ -3,6 +3,11 @@
 # Author: jeroen
 ###############################################################################
 
+as.scalar <- function(obj){
+	return(structure(obj, class=c("scalar",class(obj))));
+}
+
+
 recordlist <- function(mydataframe){
 	L <- list();
 	if(nrow(mydataframe) == 0) return(L);
@@ -12,13 +17,18 @@ recordlist <- function(mydataframe){
 	return(L);
 }
 
-#this function is not a plot but generates some data (call through json handler)
-gmapdata <- function(serverurl, token, campaign_urn, prompt_id=NULL, ...){
+
+#' Not a plot, but generates some data with geotags for the demo front-end
+#' @param prompt_id an optional prompt id to be added to the output
+#' @param ... arguments passed on to oh.survey_response.read
+#' @return a list with geotags and optionally pictures
+#' @export
+gmapdata <- function(prompt_id=NULL, ...){
 	
-	myData <- oh.getdata(serverurl, token, campaign_urn, column_list="urn:ohmage:prompt:response,urn:ohmage:context:location:latitude,urn:ohmage:context:location:longitude,urn:ohmage:user:id,urn:ohmage:context:utc_timestamp,urn:ohmage:survey:id", ...);
+  myData <- oh.survey_response.read(column_list="urn:ohmage:prompt:response,urn:ohmage:context:location:latitude,urn:ohmage:context:location:longitude,urn:ohmage:user:id,urn:ohmage:context:timestamp,urn:ohmage:survey:id", ...);
 
   #specify output data
-  outputcolumns <- c("context.location.longitude","context.location.latitude","context.utc_timestamp","user.id"); 
+  outputcolumns <- c("context.location.longitude","context.location.latitude","context.timestamp","user.id"); 
   newnames <- c("lng", "lat", "timestamp", "user_id");
   
   #check for a photoprompt
@@ -34,7 +44,7 @@ gmapdata <- function(serverurl, token, campaign_urn, prompt_id=NULL, ...){
   #add a custom column 
   if(!is.null(prompt_id)){
 	  outputcolumns <- c(outputcolumns, paste("prompt.id.",prompt_id,sep=""));   
-	  newnames <- c(newnames, ,prompt_id);
+	  newnames <- c(newnames, prompt_id);
  	}
   
   #select rows without missing data
@@ -42,7 +52,7 @@ gmapdata <- function(serverurl, token, campaign_urn, prompt_id=NULL, ...){
   #myData <- na.omit(myData);
 
   #get it in the right format:
-  myData[["context.utc_timestamp"]] <- as.character(myData[["context.utc_timestamp"]]);  
+  myData[["context.timestamp"]] <- as.character(myData[["context.timestamp"]]);  
   names(myData) <- newnames;
 
   return(recordlist(myData)); 	

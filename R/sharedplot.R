@@ -11,7 +11,12 @@ sharedplot.do <- function(surveyvec, sharedvec, ...){
 	return(myplot);	
 }
 
-#note: PASSING ON ... TO xxxxxplot.do ... has been disabled for now.
+
+#' A barchart of the number of shared and unshared responses per campaign
+#' @param campaign_urn campaign id
+#' @param ... arguments passed on to oh.survey_response.read
+#' @return a ggplot2 object 
+#' @export
 sharedplot <- function(campaign_urn, ...){
 	
 	#check for secret 'printurl' argument
@@ -29,4 +34,7 @@ sharedplot <- function(campaign_urn, ...){
 	#make plot
 	plottitle <- paste("sharedplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
 	myplot <- sharedplot.do(myData$survey.id, myData$survey.privacy_state, xlab="", ylab="Response Count", main=plottitle);
+	
+	#return
+	return(myplot);
 }

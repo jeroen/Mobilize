@@ -48,6 +48,7 @@ biplot.factor <- function(xvar, yvar, ...){
 
 biplot.factorfactor <- function(xvar, yvar, ...){
 	#melt data into df
+	library(reshape);
 	myData <- melt(table(xvar,yvar));
 	myData$xvar <- factor(myData$xvar, levels=levels(xvar), ordered=T);
 	myData$yvar <- factor(myData$yvar, levels=levels(yvar), ordered=T);
@@ -56,7 +57,7 @@ biplot.factorfactor <- function(xvar, yvar, ...){
 	#make plot
 	myplot <- qplot(x=xvar, y=yvar, size=value*2, color=value, label=value, data=myData, ...) + geom_point() +
 	geom_text(aes(size=value), color="white") +
-	scale_size(range = c(5, 20), legend=FALSE);	
+	scale_size(range = c(5, 20), guide="none");	
 
 	#return plot 
 	return(myplot);
@@ -66,7 +67,15 @@ biplot.do <- function(values, dates, ...){
 	UseMethod("biplot")	
 }
 
-#biplot function
+
+#' Generate a biplot of two variables
+#' @param campaign_urn id of the campaign
+#' @param prompt_id prompt on the x axis
+#' @param prompt2_id prompt on the y axis
+#' @param ... other parameters passed on to oh.survey_response/read
+#' @importFrom reshape melt
+#' @return ggplot2 plot object
+#' @export
 biplot <- function(campaign_urn, prompt_id, prompt2_id, ...){
 	
 	#secret argument printurl for debugging
@@ -108,6 +117,9 @@ biplot <- function(campaign_urn, prompt_id, prompt2_id, ...){
 	#}	
 	
 	myplot <- biplot.do(x_var, y_var, xlab=prompt_id, ylab=prompt2_id, main="");
+	
+	#return
+	return(myplot);
 
 }
 

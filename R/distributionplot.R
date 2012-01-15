@@ -42,11 +42,15 @@ distributionplot.character <- function(values, ...){
 	allwords <- tolower(strsplit(bigstring, " +")[[1]])
 	
 	#count, sort, head
+	library(reshape); #reshape::melt does not work.
 	cloud <- melt(head(as.list(sort(table(allwords)), decr=T), 100));
 	words <- cloud[[2]];
 	freq <- cloud[[1]];
-	wordcloud(words, freq, min.freq=min(freq));
-	return();
+	
+	#make plot
+	myplot <- qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=freq, color=freq) +
+			scale_size(range = c(6, 12)) + opts(axis.text.x = theme_blank()) + opts(axis.text.y = theme_blank()); 
+	return(myplot);
 	
 	#myplot <- qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=freq, color=freq) +
 	#scale_size(range = c(6, 12))
@@ -58,6 +62,12 @@ distributionplot.do <- function(values, ...){
 	UseMethod("distributionplot");
 }
 
+#' Shows a histogram or barchart of the data
+#' @param campaign_urn campaign id 
+#' @param prompt_id id of the prompt
+#' @param ... other arguments passed to oh.survey_response.read
+#' @return ggplot2 plot object
+#' @export
 distributionplot <- function(campaign_urn, prompt_id, ...){
 	
 	#secret argument printurl for debugging	
@@ -75,5 +85,8 @@ distributionplot <- function(campaign_urn, prompt_id, ...){
 	
 	#draw plot
 	plottitle <- paste("distributionplot: ", prompt_id, sep="");	
-	myplot <- distributionplot.do(na.omit(myData[[fullname]]), xlab="", ylab="", main=plottitle)
+	myplot <- distributionplot.do(na.omit(myData[[fullname]]), xlab="", ylab="", main=plottitle);
+	 
+	#return
+	return(myplot);
 }

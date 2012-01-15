@@ -1,20 +1,12 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
 
-
-keepalive <- function(serverurl, token){
+#' Simple call to test / revalidate token
+#' @return list with result == "success"
+#' @export
+keepalive <- function(){
 	
-	if(is.null(token) | is.null(serverurl)){
-		stop("Need to supply both server and valid token.");
-	}
+	#test if we can do a read
+	oh.user.read("");
 	
-	assign("SERVERURL", serverurl, "package:Ohmage");
-	assign("TOKEN", token, "package:Ohmage");	
-	
-	if(oh.user.read("")$result != "success"){
-		stop("Something went wrong...")
-	}
+	#if no error: return success
 	return(list(result="success"));	
 }

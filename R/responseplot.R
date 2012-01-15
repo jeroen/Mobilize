@@ -26,14 +26,22 @@ responseplot.do <- function(dates, surveyvec, aggregate, ...){
 	return(myplot);	
 }
 
-#note: anything in ... will be passed to the server
+
+
+#' Create a responseplot
+#' @param campaign_urn id of the campaign
+#' @param aggregate optional number of days to aggregate over. Defaults to something smart.
+#' @param ... stuff to pass on to oh.survey_response.read
+#' @return a responseplot
+#' @import ggplot2
+#' @export
 responseplot <- function(campaign_urn, aggregate, ...){
 
 	#secret argument printurl for debugging
 	geturl(match.call(expand.dots=T))
 	
 	#retrieve data
-	myData <- oh.survey_response.read(campaign_urn=campaign_urn, column_list="urn:ohmage:context:utc_timestamp,urn:ohmage:survey:id", ...);
+	myData <- oh.survey_response.read(campaign_urn=campaign_urn, column_list="urn:ohmage:context:timestamp,urn:ohmage:survey:id", ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
 	
 	#empty plot
@@ -43,6 +51,9 @@ responseplot <- function(campaign_urn, aggregate, ...){
 	
 	#create plot:	
 	plottitle <- paste("responseplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
-	myplot <- responseplot.do(myData$context.utc_timestamp, myData$survey.id, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle)
+	myplot <- responseplot.do(myData$context.timestamp, myData$survey.id, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle)
+	
+	#return
+	return(myplot);
 }
 
