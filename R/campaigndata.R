@@ -7,7 +7,7 @@
 campaigndata <- function(...){
 
 	#remainig arguments should contain read data.
-	campaigns <- oh.campaign.read(output="long", ...);
+	campaigns <- oh.campaign.read(output_format="long", ...);
 	
 	if(length(campaigns$data) == 0){
 		stop("User does not have access to any campaigns.")

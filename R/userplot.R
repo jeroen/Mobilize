@@ -31,6 +31,7 @@ userplot.factor <- function(values, dates, ...){
 	library(reshape);
 	myData <- melt(table(dates, values));
 	names(myData) <- c("dates", "values", "count");
+	myData$dates <- as.Date(myData$dates);
 	myData <- myData[myData$count > 0,];
 	
 	myplot <- qplot(x=dates,y=values, size=count*2, color=count, label=count, data=myData, ...) + geom_point() +

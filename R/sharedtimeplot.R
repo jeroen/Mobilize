@@ -1,13 +1,6 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
-
 sharedtimeplot.do <- function(dates, surveyvec, sharedvec, aggregate, ...){
 
 	#remove time
-	dates <- as.Date(dates);
 	if(missing(aggregate)){
 		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
 		if(totalperiod < 30){
@@ -43,7 +36,7 @@ sharedtimeplot <- function(campaign_urn, aggregate, ...){
 	geturl(match.call(expand.dots=T));
 	
 	#grab data
-	myData <- oh.survey_response.read(campaign_urn, column_list="urn:ohmage:survey:privacy_state,urn:ohmage:context:timestamp,urn:ohmage:survey:id", ...);
+	myData <- oh.survey_response.function.read(campaign_urn, ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
 	
 	#check for no data
@@ -53,6 +46,7 @@ sharedtimeplot <- function(campaign_urn, aggregate, ...){
 	
 	#draw plot
 	plottitle <- paste("sharedtimeplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
-	myplot <- sharedtimeplot.do(myData$context.timestamp, myData$survey.id, myData$survey.privacy_state, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle);
+	myplot <- sharedtimeplot.do(rep(myData$date, myData$count), rep(myData$survey_id, myData$count), rep(myData$privacy_state, myData$count), aggregate, ...);
+
 	return(myplot)
 }

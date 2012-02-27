@@ -8,7 +8,7 @@
 test.mobilize <- function(serverurl, username, password){
 	try(oh.logout());
 	oh.login(username, password, serverurl);
-	campaigns <- oh.campaign.read(output="long");
+	campaigns <- oh.campaign.read(output_format="long");
 	campaign.names <- names(campaigns$data);
 	
 	for(i in campaign.names){

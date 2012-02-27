@@ -1,17 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
-
-sharedplot.do <- function(surveyvec, sharedvec, ...){
-	survey <- surveyvec;
-	privacy <- sharedvec;
-	myplot <- qplot(survey, geom="bar", group=privacy, fill=privacy, ...);
-	return(myplot);	
-}
-
-
 #' A barchart of the number of shared and unshared responses per campaign
 #' @param campaign_urn campaign id
 #' @param ... arguments passed on to oh.survey_response.read
@@ -23,18 +9,19 @@ sharedplot <- function(campaign_urn, ...){
 	geturl(match.call(expand.dots=T));
 	
 	#get data
-	myData <- oh.survey_response.read(campaign_urn, column_list="urn:ohmage:survey:privacy_state,urn:ohmage:survey:id", ...);
-	if(nrow(myData) > 0) myData <- na.omit(myData);
+	myData <- oh.survey_response.function.read(campaign_urn, privacy_state_item_list="survey", ...);
 	
 	#check if we have some data
 	if(nrow(myData) == 0){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
-	}	
-	
+	}
+		
 	#make plot
 	plottitle <- paste("sharedplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
-	myplot <- sharedplot.do(myData$survey.id, myData$survey.privacy_state, xlab="", ylab="Response Count", main=plottitle);
 	
+	myplot <- ggplot(aes(x=survey_id, y=count, group=privacy_state, fill=privacy_state), data=myData) +
+		geom_bar(stat="identity") # (xlab="Survey", ylab="count", main=plottitle);
+
 	#return
 	return(myplot);
 }

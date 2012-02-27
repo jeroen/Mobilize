@@ -18,10 +18,10 @@ distributionplot.multifactor <- function(values, ...){
 distributionplot.numeric <- function(values, ...){
 	
 	#exception if there are only a couple of unique values:
-	#if(length(unique(values)) < 8){
-	#	values <- factor(values, ordered=T);
-	#	distributionplot.do(values, ...);
-	#}
+	if(length(unique(values)) < 8){
+		values <- factor(values, ordered=T);
+		return(distributionplot.do(values, ...));
+	}
 	
 	myplot <- qplot(values, geom="bar", ...) 
 	return(myplot);
@@ -74,7 +74,7 @@ distributionplot <- function(campaign_urn, prompt_id, ...){
 	geturl(match.call(expand.dots=T));
 		
 	#get data
-	myData <- oh.survey_response.read(campaign_urn=campaign_urn, prompt_id=prompt_id, column_list="urn:ohmage:prompt:response", ...);
+	myData <- oh.survey_response.read(campaign_urn=campaign_urn, prompt_id_list=prompt_id, column_list="urn:ohmage:prompt:response", ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
 	fullname <- paste("prompt.id.", prompt_id, sep="");
 
