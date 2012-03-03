@@ -268,7 +268,7 @@ Ext.onReady(function(){
 	});
 	
 	var plotarguments = {
-		"responseplot": ["start_date", "end_date", "campaign_urn", "privacy_state", "aggregate"],
+		"responseplot": ["start_date", "end_date", "campaign_urn", "aggregate"],
 		"timeplot" : ["start_date", "end_date", "campaign_urn","prompt_id", "privacy_state", "aggregate"],
 		"sharedplot" : ["start_date", "end_date", "campaign_urn"],
 		"sharedtimeplot" : ["start_date", "end_date", "campaign_urn", "aggregate"],		

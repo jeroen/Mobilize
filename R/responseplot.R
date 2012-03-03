@@ -1,8 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
 responseplot.do <- function(dates, surveyvec, aggregate, ...){
 	dates <- as.Date(dates);
 	if(missing(aggregate)){
@@ -36,24 +31,26 @@ responseplot.do <- function(dates, surveyvec, aggregate, ...){
 #' @import ggplot2
 #' @export
 responseplot <- function(campaign_urn, aggregate, ...){
-
-	#secret argument printurl for debugging
-	geturl(match.call(expand.dots=T))
 	
-	#retrieve data
-	myData <- oh.survey_response.read(campaign_urn=campaign_urn, column_list="urn:ohmage:context:timestamp,urn:ohmage:survey:id", ...);
+	#printurl
+	geturl(match.call(expand.dots=T));
+	
+	#grab data
+	myData <- oh.survey_response.function.read(campaign_urn, ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
 	
-	#empty plot
+	#check for no data
 	if(nrow(myData) == 0){
-		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab="Response Count"));
+		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
 	}	
 	
-	#create plot:	
+	#draw plot
 	plottitle <- paste("responseplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
-	myplot <- responseplot.do(myData$context.timestamp, myData$survey.id, aggregate=aggregate, xlab="", ylab="Response Count", main=plottitle)
+	myplot <- responseplot.do(
+			rep(myData$date, myData$count), rep(myData$survey_id, myData$count),  
+			xlab="", ylab="Response Count", main=plottitle, aggregate, ...);
 	
 	#return
-	return(myplot);
+	return(myplot)	
 }
 
