@@ -30,7 +30,7 @@ responseplot.do <- function(dates, surveyvec, aggregate, ...){
 #' @return a responseplot
 #' @import ggplot2
 #' @export
-responseplot <- function(campaign_urn, aggregate, ...){
+responseplot <- function(campaign_urn, aggregate, privacy_state="both", ...){
 	
 	#printurl
 	geturl(match.call(expand.dots=T));
@@ -38,12 +38,19 @@ responseplot <- function(campaign_urn, aggregate, ...){
 	#grab data
 	myData <- oh.survey_response.function.read(campaign_urn, ...);
 	if(nrow(myData) > 0) myData <- na.omit(myData);
+
+	#filter shared.
+	if(privacy_state == "shared"){
+		myData <- myData[myData$privacy_state == "shared",];
+	} else if (privacy_state == "private"){
+		myData <- myData[myData$privacy_state == "private",];
+	}	
 	
 	#check for no data
 	if(nrow(myData) == 0){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
 	}	
-	
+
 	#draw plot
 	plottitle <- paste("responseplot: ", gsub("urn:campaign:","",campaign_urn), sep="");
 	myplot <- responseplot.do(
