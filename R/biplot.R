@@ -48,8 +48,9 @@ biplot.factor <- function(xvar, yvar, ...){
 
 biplot.factorfactor <- function(xvar, yvar, ...){
 	#melt data into df
-	library(reshape);
+	#library(reshape);
 	myData <- melt(table(xvar,yvar));
+	names(myData) <- c("xvar", "yvar", "value");
 	myData$xvar <- factor(myData$xvar, levels=levels(xvar), ordered=T);
 	myData$yvar <- factor(myData$yvar, levels=levels(yvar), ordered=T);
 	myData <- myData[myData$value > 0,];
@@ -73,7 +74,6 @@ biplot.do <- function(values, dates, ...){
 #' @param prompt_id prompt on the x axis
 #' @param prompt2_id prompt on the y axis
 #' @param ... other parameters passed on to oh.survey_response/read
-#' @importFrom reshape melt
 #' @return ggplot2 plot object
 #' @export
 biplot <- function(campaign_urn, prompt_id, prompt2_id, ...){

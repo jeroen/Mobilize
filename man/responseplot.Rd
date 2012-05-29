@@ -2,7 +2,8 @@
 \alias{responseplot}
 \title{Create a responseplot}
 \usage{
-  responseplot(campaign_urn, aggregate, ...)
+  responseplot(campaign_urn, aggregate,
+    privacy_state = "both", ...)
 }
 \arguments{
   \item{campaign_urn}{id of the campaign}

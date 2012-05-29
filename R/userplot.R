@@ -28,7 +28,7 @@ userplot.factor <- function(values, dates, ...){
 	dates <- as.Date(dates);
 	dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
 
-	library(reshape);
+	#library(reshape);
 	myData <- melt(table(dates, values));
 	names(myData) <- c("dates", "values", "count");
 	myData$dates <- as.Date(myData$dates);
@@ -64,6 +64,7 @@ userplot.do <- function(values, dates, ...){
 #' @param user_id user id
 #' @param ... arguments passed on to oh.survey_response.read
 #' @return a ggplot2 plot object
+#' @import reshape2
 #' @export
 userplot <- function(campaign_urn, prompt_id, user_id, ...){
 	

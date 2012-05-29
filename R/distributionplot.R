@@ -42,15 +42,20 @@ distributionplot.character <- function(values, ...){
 	allwords <- tolower(strsplit(bigstring, " +")[[1]])
 	
 	#count, sort, head
-	library(reshape); #reshape::melt does not work.
-	cloud <- melt(head(as.list(sort(table(allwords)), decr=T), 100));
+	#library(reshape); #reshape::melt does not work.
+	cloud <- melt(head(as.list(sort(table(allwords), decr=T)), 200));
 	words <- cloud[[2]];
 	freq <- cloud[[1]];
 	
 	#make plot
-	myplot <- qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=freq, color=freq) +
-			scale_size(range = c(6, 12)) + opts(axis.text.x = theme_blank()) + opts(axis.text.y = theme_blank()); 
-	return(myplot);
+	#myplot <- qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=freq, color=freq) +
+	#scale_size(range = c(6, 12)) + opts(axis.text.x = theme_blank()) + opts(axis.text.y = theme_blank()); 
+	#return(myplot);
+	
+	#make plot with wordcloud package
+	pal <- c("#66C2A4", "#41AE76", "#238B45", "#006D2C", "#00441B")
+	suppressWarnings(wordcloud(words, ceiling(log(freq+1,2)), min.freq=1, c(5,.5), random.order=FALSE, colors=pal))
+	invisible()
 	
 	#myplot <- qplot(x=runif(length(words)), y=runif(length(words)), ..., geom="text", label=words, size=freq, color=freq) +
 	#scale_size(range = c(6, 12))
@@ -67,6 +72,7 @@ distributionplot.do <- function(values, ...){
 #' @param prompt_id id of the prompt
 #' @param ... other arguments passed to oh.survey_response.read
 #' @return ggplot2 plot object
+#' @import wordcloud plyr RColorBrewer
 #' @export
 distributionplot <- function(campaign_urn, prompt_id, ...){
 	

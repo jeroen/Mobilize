@@ -25,26 +25,10 @@ timeplot.multifactor <- function(values, dates, aggregate, ...){
 timeplot.numeric <- function(values, dates, aggregate, ...){
 
 	dates <- as.Date(dates);
-	if(missing(aggregate)){
-		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
-		if(totalperiod < 30){
-			mybinwidth <- 1;
-		} else if (totalperiod < 180 ){
-			mybinwidth <- 7;
-		} else {
-			mybinwidth <- 30;
-		}
-	} else {
-		if(!is.numeric(aggregate)){
-			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
-		}
-		mybinwidth <- aggregate;
-	}
+	mybinwidth <- aggregate;
 	
-	myData <- bin.by.date(dates, values, binwidth=mybinwidth, probs=c(0,.5,1));
-	names(myData) <- c("Date", "Min", "Mean", "Max");
-  
-	myplot <- qplot(x=Date, y=Mean, ymin=Min, ymax=Max, data=myData, ...) +
+	bindata <- bin.by.date(dates, values, binwidth=mybinwidth, probs=c(0,.5,1));
+	myplot <- qplot(x=Date, y=Mean, ymin=Q1, ymax=Q3, data=bindata, ...) +
 	geom_ribbon(alpha=0.3) +
 	geom_line(size=1, color="blue") +
 	geom_point(size=3, color="red");
@@ -55,21 +39,7 @@ timeplot.numeric <- function(values, dates, aggregate, ...){
 timeplot.factor <- function(values, dates, aggregate, ...){
 	
 	dates <- as.Date(dates);
-	if(missing(aggregate)){
-		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
-		if(totalperiod < 30){
-			mybinwidth <- 1;
-		} else if (totalperiod < 180 ){
-			mybinwidth <- 7;
-		} else {
-			mybinwidth <- 30;
-		}
-	} else {
-		if(!is.numeric(aggregate)){
-			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
-		}
-		mybinwidth <- aggregate;
-	}
+	mybinwidth <- aggregate;
 	
 	myData <- data.frame(date=dates, value=values);
 	myplot <- qplot(x=date, fill=value, data=myData, ...) + geom_bar(binwidth=mybinwidth);
@@ -80,7 +50,7 @@ timeplot.character <- function(values, dates, ...){
 	
 	#create dataframe of strings
 	dates <- as.Date(dates);
-	dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
+	#dates <- factor(unclass(dates), levels=seq(min(dates), max(dates), by=1));
 	y <- runif(length(dates),0,1);
 	angle <- rnorm(length(dates),0,10)
 	myData <- data.frame(date=dates, text=values, y=y, angle=angle);
@@ -124,6 +94,23 @@ timeplot <- function(campaign_urn, prompt_id, aggregate, ...){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
 	}	
 
+	#set default for aggregate
+	dates <- as.Date(myData$context.timestamp);
+	if(missing(aggregate)){
+		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
+		if(totalperiod < 30){
+			aggregate <- 1;
+		} else if (totalperiod < 180 ){
+			aggregate <- 7;
+		} else {
+			aggregate <- 30;
+		}
+	} else {
+		if(!is.numeric(aggregate)){
+			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
+		}
+	}		
+	
 	#draw plot
 	plottitle <- paste("timeplot: ", prompt_id, sep="");	
 	myplot <- timeplot.do(myData[[fullname]], myData$context.timestamp, aggregate=aggregate, main=plottitle, xlab="", ylab="");
