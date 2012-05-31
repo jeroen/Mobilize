@@ -43,7 +43,7 @@ distributionplot.character <- function(values, ...){
 	
 	#count, sort, head
 	#library(reshape); #reshape::melt does not work.
-	cloud <- melt(head(as.list(sort(table(allwords), decr=T)), 200));
+	cloud <- melt(head(as.list(sort(table(allwords), decreasing=TRUE)), 200));
 	words <- cloud[[2]];
 	freq <- cloud[[1]];
 	
@@ -72,7 +72,7 @@ distributionplot.do <- function(values, ...){
 #' @param prompt_id id of the prompt
 #' @param ... other arguments passed to oh.survey_response.read
 #' @return ggplot2 plot object
-#' @import wordcloud plyr RColorBrewer
+#' @import wordcloud
 #' @export
 distributionplot <- function(campaign_urn, prompt_id, ...){
 	

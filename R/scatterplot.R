@@ -29,12 +29,12 @@ scatterplot <- function(campaign_urn, prompt_id, prompt2_id, jitter=TRUE, ...){
 	y_var <- myData[[yvarname]];
 	
 	if(is.multifactor(x_var)){
-		y_var <- rep(y_var, dim(x_var));
+		y_var <- rep(y_var, facdim(x_var));
 		x_var <- as.vector(x_var);
 	}
 	
 	if(is.multifactor(y_var)){
-		x_var <- rep(x_var, dim(y_var));
+		x_var <- rep(x_var, facdim(y_var));
 		y_var <- as.vector(y_var);
 	}		
 	

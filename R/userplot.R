@@ -4,23 +4,23 @@
 ###############################################################################
 
 userplot.POSIXct <- function(values, dates, ...){
-	myplot <- timeplot.POSIXct(values, dates, ...);
+	myplot <- timeplot_with_aggregate(values, dates, ...);
 	return(myplot);
 }
 
 userplot.hours_before_now <- function(values, dates, ...){
-	myplot <- timeplot.hours_before_now(values, dates, ...);
+	myplot <- timeplot_with_aggregate(values, dates, ...);
 	return(myplot);
 }
 
 userplot.multifactor <- function(values, dates, ...){
 	newvalues <- as.vector(values);
-	newdates <- rep(dates, dim(values));
+	newdates <- rep(dates, facdim(values));
 	userplot.do(newvalues, newdates, ...);
 }
 
 userplot.numeric <- function(values, dates, ...){
-	myplot <- timeplot.numeric(values, dates, ...);
+	myplot <- timeplot_with_aggregate(values, dates, ...);
 	return(myplot);
 }
 
@@ -44,7 +44,7 @@ userplot.factor <- function(values, dates, ...){
 userplot.character <- function(values, dates, ...){
 	
 	#same as timeplot
-	myplot <- timeplot.character(values, dates, ...);
+	myplot <- timeplot_with_aggregate(values, dates, ...);
 	return(myplot);
 	
 }

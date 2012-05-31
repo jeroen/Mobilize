@@ -26,6 +26,7 @@ responseplot.do <- function(dates, surveyvec, aggregate, ...){
 #' Create a responseplot
 #' @param campaign_urn id of the campaign
 #' @param aggregate optional number of days to aggregate over. Defaults to something smart.
+#' @param privacy_state either "shared" or "private" or "both"
 #' @param ... stuff to pass on to oh.survey_response.read
 #' @return a responseplot
 #' @import ggplot2

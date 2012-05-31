@@ -18,7 +18,7 @@ timeplot.hours_before_now <- function(values, dates, aggregate, ...){
 
 timeplot.multifactor <- function(values, dates, aggregate, ...){
 	newvalues <- as.vector(values);
-	newdates <- rep(dates, dim(values));
+	newdates <- rep(dates, facdim(values));
 	timeplot.do(newvalues, newdates, aggregate,...);
 }
 
@@ -28,8 +28,8 @@ timeplot.numeric <- function(values, dates, aggregate, ...){
 	mybinwidth <- aggregate;
 	
 	bindata <- bin.by.date(dates, values, binwidth=mybinwidth, probs=c(0,.5,1));
-	myplot <- qplot(x=Date, y=Mean, ymin=Q1, ymax=Q3, data=bindata, ...) +
-	geom_ribbon(alpha=0.3) +
+	myplot <- qplot(x=Date, y=Mean, ymin=Min, ymax=Max, data=bindata, ...) +
+	geom_ribbon(alpha=0.5) +
 	geom_line(size=1, color="blue") +
 	geom_point(size=3, color="red");
      
@@ -42,7 +42,7 @@ timeplot.factor <- function(values, dates, aggregate, ...){
 	mybinwidth <- aggregate;
 	
 	myData <- data.frame(date=dates, value=values);
-	myplot <- qplot(x=date, fill=value, data=myData, ...) + geom_bar(binwidth=mybinwidth);
+	myplot <- ggplot(aes(x=date, fill=value), data=myData) + geom_bar(binwidth=mybinwidth, color="white", size=0.2);
 	return(myplot);		
 }
 
@@ -56,8 +56,7 @@ timeplot.character <- function(values, dates, ...){
 	myData <- data.frame(date=dates, text=values, y=y, angle=angle);
 	
 	#create plot
-	myplot <- qplot(date, y, label=text, angle=angle, geom="text", data=myData, ...) +
-		opts(axis.text.y = theme_blank()); 
+	myplot <- qplot(date, y, label=text, angle=angle, geom="text", data=myData, ...)
 	return(myplot);
 	
 }
@@ -71,6 +70,25 @@ timeplot.do <- function(values, dates, ...){
 	UseMethod("timeplot")	
 }
 
+timeplot_with_aggregate <- function(values, dates, aggregate, ...){
+	dates <- as.Date(dates);
+	if(missing(aggregate) || is.null(aggregate)){
+		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
+		if(totalperiod < 30){
+			aggregate <- 1;
+		} else if (totalperiod < 180 ){
+			aggregate <- 7;
+		} else {
+			aggregate <- 30;
+		}
+	} else {
+		if(!is.numeric(aggregate)){
+			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
+		}
+	}
+	
+	timeplot.do(values, dates, aggregate, ...);
+}
 
 #' Timeseries plot of a prompt 
 #' @param campaign_urn campaign id
@@ -94,26 +112,14 @@ timeplot <- function(campaign_urn, prompt_id, aggregate, ...){
 		return(qplot(0,0,geom="text", label="request returned no data.", xlab="", ylab=""));
 	}	
 
-	#set default for aggregate
-	dates <- as.Date(myData$context.timestamp);
+	#set aggregate
 	if(missing(aggregate)){
-		totalperiod <- unclass(range(dates)[2] - range(dates)[1]);
-		if(totalperiod < 30){
-			aggregate <- 1;
-		} else if (totalperiod < 180 ){
-			aggregate <- 7;
-		} else {
-			aggregate <- 30;
-		}
-	} else {
-		if(!is.numeric(aggregate)){
-			stop("Argument aggregate has to be a number that represents the number of days to aggregate over.")
-		}
-	}		
+		aggregate <- NULL;
+	}
 	
 	#draw plot
 	plottitle <- paste("timeplot: ", prompt_id, sep="");	
-	myplot <- timeplot.do(myData[[fullname]], myData$context.timestamp, aggregate=aggregate, main=plottitle, xlab="", ylab="");
+	myplot <- timeplot_with_aggregate(myData[[fullname]], myData$context.timestamp, aggregate=aggregate) + opts(title=plottitle) + xlab("") + ylab("");
 	
 	#return
 	return(myplot);
