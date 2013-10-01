@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Ohmage / OpenCPU Data Explorer</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<!-- ocpu library -->
+<script src="js/jquery-1.10.2.min.js"> </script>
+<script src="js/bootstrap.min.js"> </script>
+<script src="js/opencpu.js"> </script>
+<script src="js/underscore-min.js"> </script>
+<script src="js/jquery.cookie.js"> </script>
+<script src="js/ohmage.js"> </script>
+<script src="js/jquery-ui-1.10.3.custom.js"> </script>
+<script src="js/app.js"> </script>
+
+<!-- some optional styling stuff -->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="css/jquery-ui-1.10.3.custom.css" rel="stylesheet" media="screen">
+<link href="css/app.css" rel="stylesheet" media="screen">
+
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Ohmage / OpenCPU Data Explorer<span class="pull-right" id="username"></span></h1>
+    </div>
+    
+    <div class="row">
+      <div class="well col-md-4 col-lg-3">
+
+        <form id="paramform">
+          <fieldset>
+            <legend>Campaign</legend>
+            <select id="campaignfield" class="form-control">
+            </select> 
+            
+            <br>
+            
+            <legend>Parameters</legend>
+            
+
+            
+          </fieldset>
+        </form>
+        
+        <br>
+        <button class="btn btn-primary" id="plotbutton"><i class="icon-ok icon-white"></i> Update Plot</button>
+      </div>
+      
+      <div class="col-md-8 col-lg-9">
+        <div id="plotdiv"></div>
+      </div>  
+    </div>
+    
+    <div class="row">
+    </div>   
+    
+  </div>
+</body>
+</html>
