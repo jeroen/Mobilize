@@ -1,8 +1,8 @@
 Package: Mobilize
 Type: Package
 Title: Mobilize plots and functions
-Version: 2.11-2
-Date: 2012-05-29
+Version: 2.16-0
+Date: 2013-10-1
 Author: Jeroen Ooms
 Maintainer: Jeroen Ooms <jeroen.ooms@stat.ucla.edu>
 Description: Some canned plots and functions designed for the mobilize project.
@@ -11,8 +11,7 @@ License: GPL
 Depends:
     R (>= 2.14),
     stats,
-    methods,
-    Ohmage
+    methods
 Imports:
     ggplot2,
     wordcloud,
@@ -21,20 +20,3 @@ Imports:
 Suggests:
     XML,
     maps
-Collate:
-    'bin.by.date.R'
-    'biplot.R'
-    'campaigndata.R'
-    'distributionplot.R'
-    'getpicture.R'
-    'geturl.R'
-    'gmapdata.R'
-    'keepalive.R'
-    'mapmobility.R'
-    'responseplot.R'
-    'scatterplot.R'
-    'sharedplot.R'
-    'sharedtimeplot.R'
-    'test.mobilze.R'
-    'timeplot.R'
-    'userplot.R'
