@@ -28,6 +28,8 @@ $(function() {
           })
         });
         campaigndata[campaign_urn] = mydata;
+        
+        //recursive in case user changed selection in the mean time
         loadcampaign();
       });
     }
