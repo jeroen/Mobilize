@@ -11,7 +11,8 @@ License: GPL
 Depends:
     R (>= 2.14),
     stats,
-    methods
+    methods,
+    Ohmage
 Imports:
     ggplot2,
     wordcloud,
