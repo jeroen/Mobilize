@@ -2,7 +2,7 @@
 \alias{biplot}
 \title{Generate a biplot of two variables}
 \usage{
-  biplot(campaign_urn, prompt_id, prompt2_id, ...)
+biplot(campaign_urn, prompt_id, prompt2_id, ...)
 }
 \arguments{
   \item{campaign_urn}{id of the campaign}
@@ -15,9 +15,9 @@
   oh.survey_response/read}
 }
 \value{
-  ggplot2 plot object
+ggplot2 plot object
 }
 \description{
-  Generate a biplot of two variables
+Generate a biplot of two variables
 }
 

@@ -2,7 +2,7 @@
 \alias{userplot}
 \title{Timeseries plot of data for a single user}
 \usage{
-  userplot(campaign_urn, prompt_id, user_id, ...)
+userplot(campaign_urn, prompt_id, user_id, ...)
 }
 \arguments{
   \item{campaign_urn}{campaign id}
@@ -15,9 +15,9 @@
   oh.survey_response.read}
 }
 \value{
-  a ggplot2 plot object
+a ggplot2 plot object
 }
 \description{
-  Timeseries plot of data for a single user
+Timeseries plot of data for a single user
 }
 

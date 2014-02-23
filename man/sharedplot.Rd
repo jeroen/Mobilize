@@ -2,7 +2,7 @@
 \alias{sharedplot}
 \title{A barchart of the number of shared and unshared responses per campaign}
 \usage{
-  sharedplot(campaign_urn, ...)
+sharedplot(campaign_urn, ...)
 }
 \arguments{
   \item{campaign_urn}{campaign id}
@@ -11,10 +11,10 @@
   oh.survey_response.read}
 }
 \value{
-  a ggplot2 object
+a ggplot2 object
 }
 \description{
-  A barchart of the number of shared and unshared responses
-  per campaign
+A barchart of the number of shared and unshared responses
+per campaign
 }
 

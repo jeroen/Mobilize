@@ -2,7 +2,7 @@
 \alias{timeplot}
 \title{Timeseries plot of a prompt}
 \usage{
-  timeplot(campaign_urn, prompt_id, aggregate, ...)
+timeplot(campaign_urn, prompt_id, aggregate, ...)
 }
 \arguments{
   \item{campaign_urn}{campaign id}
@@ -16,9 +16,9 @@
   oh.survey_response.read}
 }
 \value{
-  ggplot2 plot object
+ggplot2 plot object
 }
 \description{
-  Timeseries plot of a prompt
+Timeseries plot of a prompt
 }
 

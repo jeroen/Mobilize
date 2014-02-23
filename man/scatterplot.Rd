@@ -2,8 +2,7 @@
 \alias{scatterplot}
 \title{Create a scatterplot of two prompts}
 \usage{
-  scatterplot(campaign_urn, prompt_id, prompt2_id,
-    jitter = TRUE, ...)
+scatterplot(campaign_urn, prompt_id, prompt2_id, jitter = TRUE, ...)
 }
 \arguments{
   \item{campaign_urn}{id of the campaign}
@@ -18,9 +17,9 @@
   oh.survey_response.read}
 }
 \value{
-  ggplot2 object
+ggplot2 object
 }
 \description{
-  Create a scatterplot of two prompts
+Create a scatterplot of two prompts
 }
 

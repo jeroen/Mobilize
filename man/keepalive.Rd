@@ -2,12 +2,12 @@
 \alias{keepalive}
 \title{Simple call to test / revalidate token}
 \usage{
-  keepalive()
+keepalive()
 }
 \value{
-  list with result == "success"
+list with result == "success"
 }
 \description{
-  Simple call to test / revalidate token
+Simple call to test / revalidate token
 }
 

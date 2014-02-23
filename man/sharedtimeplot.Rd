@@ -2,7 +2,7 @@
 \alias{sharedtimeplot}
 \title{Timeseries plot of the number of shared and unshared responses per campaign}
 \usage{
-  sharedtimeplot(campaign_urn, aggregate, ...)
+sharedtimeplot(campaign_urn, aggregate, ...)
 }
 \arguments{
   \item{campaign_urn}{campaign id}
@@ -14,10 +14,10 @@
   oh.survey_response.read}
 }
 \value{
-  a ggplot2 object
+a ggplot2 object
 }
 \description{
-  Timeseries plot of the number of shared and unshared
-  responses per campaign
+Timeseries plot of the number of shared and unshared
+responses per campaign
 }
 

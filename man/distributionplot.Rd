@@ -2,7 +2,7 @@
 \alias{distributionplot}
 \title{Shows a histogram or barchart of the data}
 \usage{
-  distributionplot(campaign_urn, prompt_id, ...)
+distributionplot(campaign_urn, prompt_id, ...)
 }
 \arguments{
   \item{campaign_urn}{campaign id}
@@ -13,9 +13,9 @@
   oh.survey_response.read}
 }
 \value{
-  ggplot2 plot object
+ggplot2 plot object
 }
 \description{
-  Shows a histogram or barchart of the data
+Shows a histogram or barchart of the data
 }
 

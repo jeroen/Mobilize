@@ -29,8 +29,19 @@ responseplot.do <- function(dates, surveyvec, aggregate, ...){
 #' @param privacy_state either "shared" or "private" or "both"
 #' @param ... stuff to pass on to oh.survey_response.read
 #' @return a responseplot
-#' @import ggplot2 methods
+#' @import Ohmage ggplot2 methods
 #' @export
+#' @examples library(Mobilize)
+#' \dontrun{
+#' #authentication works like a cookie.
+#' #oh.login("ohmage.admin", "ohmage.passwd", "https://example.com/app")
+#' 
+#' #list campaigns you are in
+#' #oh.campaign.read()
+#' 
+#' #make a plot
+#' #responseplot("urn:ohmage:campaign:mycampaign");
+#' }
 responseplot <- function(campaign_urn, aggregate, privacy_state="both", ...){
 	
 	#printurl
