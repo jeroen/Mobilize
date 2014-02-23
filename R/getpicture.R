@@ -1,4 +1,3 @@
-
 #' Wrapper for oh.image.read that adds a contenttype
 #' @param ... arguments passed on to oh.image.read
 #' @return file with the photo image.

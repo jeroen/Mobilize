@@ -1,6 +1,3 @@
-#bin per aggregate
-#used to calculate e.g. mean/min/max over x-day intervals
-
 bin.by.date <- function(dates, values, binwidth=7, ...){
 	bindates <- structure((unclass(dates) %/% binwidth  + 0.5) * binwidth, class="Date")
 	quantiles <- sapply(split(values, bindates), quantile, probs=c(0, .25, 0.5, .75, 1), na.rm=T)

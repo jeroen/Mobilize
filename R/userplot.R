@@ -1,8 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
 userplot.POSIXct <- function(values, dates, ...){
 	myplot <- timeplot_with_aggregate(values, dates, ...);
 	return(myplot);

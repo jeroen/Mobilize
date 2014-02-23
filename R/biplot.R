@@ -1,8 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
 biplot.POSIXct <- function(xvar, yvar, ...){
 	if(is.character(yvar)){
 		return(biplot.do(yvar, xvar, ...) + coord_flip());

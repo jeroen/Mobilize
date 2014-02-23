@@ -1,8 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
 timeplot.POSIXct <- function(values, dates, aggregate, ...){
 	#remove date
 	newvalues <- as.numeric(format(values, "%H"));

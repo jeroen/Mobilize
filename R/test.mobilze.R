@@ -1,10 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
-#test.mobilize("https://dev3.mobilizingcs.org/app", "ohmage.jeroen", "ohmage.jeroen");
-
 test.mobilize <- function(serverurl, username, password){
 	try(oh.logout());
 	oh.login(username, password, serverurl);

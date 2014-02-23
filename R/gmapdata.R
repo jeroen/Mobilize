@@ -1,8 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
 as.scalar <- function(obj){
 	return(structure(obj, class=c("scalar",class(obj))));
 }

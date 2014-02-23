@@ -1,9 +1,3 @@
-# TODO: Add comment
-# 
-# Author: jeroen
-###############################################################################
-
-
 geturl <- function(callmatch){
 	if(!"printurl" %in% names(callmatch) || !isTRUE(callmatch$printurl)){
 		return();

@@ -1,5 +1,3 @@
-
-
 #' Create a scatterplot of two prompts
 #' @param campaign_urn id of the campaign
 #' @param prompt_id prompt on the x axis.

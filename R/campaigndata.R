@@ -1,5 +1,3 @@
-
-
 #' Wrapper for oh.campaign.read
 #' @return List of campaigns and prompts
 #' @param ... arguments passed on to oh.campaign.read

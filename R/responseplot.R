@@ -29,7 +29,7 @@ responseplot.do <- function(dates, surveyvec, aggregate, ...){
 #' @param privacy_state either "shared" or "private" or "both"
 #' @param ... stuff to pass on to oh.survey_response.read
 #' @return a responseplot
-#' @import ggplot2
+#' @import ggplot2 methods
 #' @export
 responseplot <- function(campaign_urn, aggregate, privacy_state="both", ...){
 	
